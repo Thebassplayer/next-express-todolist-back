@@ -4,7 +4,8 @@ import express, { Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
 import corsOptions from "./middlewares/corsConfig";
-import todoRoutes from "./routes/todo";
+import todoRoutes from "./routes/todo.routes";
+import otherRoutes from "./routes/other.routes";
 
 if (!process.env.PORT) {
   throw new Error("PORT environment variable is not set");
@@ -24,7 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Configuration
 app.use(cors(corsOptions));
 
-app.use("/todo", todoRoutes);
+app.use("/api", otherRoutes);
+
+app.use("/api/todo", todoRoutes);
 
 // Start the Server
 app.listen(port, () => {
