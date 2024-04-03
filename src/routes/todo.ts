@@ -1,28 +1,19 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { TodoService } from "../services/todo.service";
+import { TodoController } from "../controllers/todo.controller";
 
 const router = Router();
-/* GET users listing. */
-router.get("/all", function (req, res, next) {
-  res.send("respond with a resource");
-});
 
-router.get("/:id", function (req, res, next) {
-  res.send("respond with a resource");
-});
+router.get("/all", TodoController.getAllTodos);
 
-router.post("/", function (req, res, next) {
-  res.send("respond with a resource");
-});
+router.get("/:id", TodoController.getTodoById);
 
-router.put("/:id", function (req, res, next) {
-  res.send("respond with a resource");
-});
+router.post("/", TodoController.createTodo);
 
-router.delete("/:id", function (req, res, next) {
-  res.send("respond with a resource");
-});
-router.delete("/all", function (req, res, next) {
-  res.send("respond with a resource");
-});
+router.put("/:id", TodoController.updateTodo);
+
+router.delete("/all", TodoController.deleteAllTodos);
+
+router.delete("/:id", TodoController.deleteTodo);
 
 export default router;
