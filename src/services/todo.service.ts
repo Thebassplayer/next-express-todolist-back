@@ -1,14 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { User, Todo } from "@prisma/client";
-
-export type TodoId = Pick<Todo, "id">;
-type Email = Pick<User, "email">;
-type UserId = Pick<User, "id">;
-type Content = Pick<Todo, "content">;
-type CreateTodo = Content & Email;
-type UpdateTodo = Pick<Todo, "content" | "done" | "authorId" | "id"> & Email;
-type GetTodoById = TodoId & Email;
-type DeleteTodo = TodoId & Email;
+import {
+  CreateTodo,
+  DeleteTodo,
+  Email,
+  GetTodoById,
+  UpdateTodo,
+} from "../types";
 
 const prisma = new PrismaClient();
 

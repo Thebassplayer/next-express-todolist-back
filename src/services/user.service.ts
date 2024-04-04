@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { UserId } from "../types";
 
 const prisma = new PrismaClient();
 
@@ -7,26 +8,29 @@ export const UserService = {
     return prisma.user.findMany({ include: { todos: true } });
   },
 
-  getUserById: async (userId: any) => {
+  getUserById: async (userId: UserId) => {
     return prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: +userId },
       include: { todos: true },
     });
   },
 
-  createUser: async (email: any, name: any) => {
+  createUser: async (email: string, name: string) => {
     return prisma.user.create({ data: { email, name } });
   },
 
-  updateUser: async (userId: any, email: any, name: any) => {
-    return prisma.user.update({ where: { id: userId }, data: { email, name } });
+  updateUser: async (userId: UserId, email: string, name: string) => {
+    return prisma.user.update({
+      where: { id: +userId },
+      data: { email, name },
+    });
   },
 
-  deleteUser: async (userId: any) => {
-    return prisma.user.delete({ where: { id: userId } });
+  deleteUser: async (userId: UserId) => {
+    return prisma.user.delete({ where: { id: +userId } });
   },
 
-  checkUserExists: async (email: any) => {
+  checkUserExists: async (email: string) => {
     return prisma.user.findUnique({ where: { email } });
   },
 };
