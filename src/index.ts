@@ -11,6 +11,7 @@ import {
   generalErrorHandler,
   notFoundHandler,
 } from "./middlewares/errorMiddleware";
+import { userInfo } from "./middlewares/getUserInfo";
 
 if (!process.env.PORT) {
   throw new Error("PORT environment variable is not set");
@@ -33,6 +34,8 @@ app.use(cors(corsOptions));
 // Routes
 
 app.use(checkJwt);
+
+app.use(userInfo);
 
 app.use("/api", otherRoutes);
 
