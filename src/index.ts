@@ -7,6 +7,10 @@ import corsOptions from "./middlewares/corsConfig";
 import todoRoutes from "./routes/todo.routes";
 import otherRoutes from "./routes/other.routes";
 import { checkJwt } from "./middlewares/authMiddleware";
+import {
+  generalErrorHandler,
+  notFoundHandler,
+} from "./middlewares/errorMiddleware";
 
 if (!process.env.PORT) {
   throw new Error("PORT environment variable is not set");
@@ -26,9 +30,16 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Configuration
 app.use(cors(corsOptions));
 
-app.use("/api", checkJwt, otherRoutes);
+// Routes
+
+app.use(checkJwt);
+
+app.use("/api", otherRoutes);
 
 app.use("/api/todo", checkJwt, todoRoutes);
+
+app.use(notFoundHandler);
+app.use(generalErrorHandler);
 
 // Start the Server
 app.listen(port, () => {
