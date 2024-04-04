@@ -1,20 +1,31 @@
 import { Request, Response, NextFunction } from "express";
 import { TodoService } from "../services/todo.service";
+import { RequestWithUser } from "../middlewares/getUserInfo";
 
 export const TodoController = {
-  getAllTodos: async (req: Request, res: Response, next: NextFunction) => {
+  getAllTodos: async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const email = req.user.email;
     try {
-      const todos = await TodoService.getAllTodos();
+      const todos = await TodoService.getAllTodos({ email });
       res.json(todos);
     } catch (error) {
       next(error);
     }
   },
 
-  getTodoById: async (req: Request, res: Response, next: NextFunction) => {
+  getTodoById: async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const todoId = parseInt(req.params.id);
-      const todo = await TodoService.getTodoById({ id: todoId });
+      const email = req.user.email;
+      const todo = await TodoService.getTodoById({ email, id: todoId });
 
       if (!todo) {
         return res.status(404).json({ message: "Todo not found" });
@@ -26,21 +37,31 @@ export const TodoController = {
     }
   },
 
-  createTodo: async (req: Request, res: Response, next: NextFunction) => {
+  createTodo: async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const { content, authorId } = req.body;
-      const newTodo = await TodoService.createTodo({ content, authorId });
+      const { content } = req.body;
+      const email = req.user.email;
+      const newTodo = await TodoService.createTodo({ content, email });
       res.json(newTodo);
     } catch (error) {
       next(error);
     }
   },
 
-  updateTodo: async (req: Request, res: Response, next: NextFunction) => {
+  updateTodo: async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const todoId = parseInt(req.params.id);
+      const email = req.user.email;
 
-      const todo = await TodoService.getTodoById({ id: todoId });
+      const todo = await TodoService.getTodoById({ email, id: todoId });
 
       if (!todo) {
         return res.status(404).json({ message: "Todo not found" });
@@ -51,6 +72,7 @@ export const TodoController = {
         content,
         done,
         authorId,
+        email,
       });
       res.json(updatedTodo);
     } catch (error) {
@@ -58,18 +80,23 @@ export const TodoController = {
     }
   },
 
-  deleteTodo: async (req: Request, res: Response, next: NextFunction) => {
+  deleteTodo: async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const todoId = parseInt(req.params.id);
-      const todo = await TodoService.getTodoById({ id: todoId });
+      const id = parseInt(req.params.id);
+      const email = req.user.email;
+      const todo = await TodoService.getTodoById({ email, id });
 
       if (!todo) {
         return res.status(404).json({ message: "Todo not found" });
       }
-      await TodoService.deleteTodo(todoId);
+      await TodoService.deleteTodo({ email, id });
       return res
         .status(200)
-        .send(`Todo with id ${todoId} has been deleted successfully`);
+        .send(`Todo with id ${id} has been deleted successfully`);
     } catch (error) {
       next(error);
     }
