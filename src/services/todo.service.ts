@@ -2,29 +2,41 @@ import { PrismaClient } from "@prisma/client";
 import { User, Todo } from "@prisma/client";
 
 export type TodoId = Pick<Todo, "id">;
+type Email = Pick<User, "email">;
 type UserId = Pick<User, "id">;
-type CreateTodo = Pick<Todo, "content" | "authorId">;
-type UpdateTodo = Pick<Todo, "content" | "done" | "authorId" | "id">;
+type Content = Pick<Todo, "content">;
+type CreateTodo = Content & Email;
+type UpdateTodo = Pick<Todo, "content" | "done" | "authorId" | "id"> & Email;
+type GetTodoById = TodoId & Email;
+type DeleteTodo = TodoId & Email;
 
 const prisma = new PrismaClient();
 
 export const TodoService = {
-  getAllTodos: async () => {
-    return prisma.todo.findMany({ include: { author: true } });
-  },
-
-  getTodoById: async ({ id }: TodoId) => {
-    return prisma.todo.findUnique({
-      where: { id },
+  getAllTodos: async ({ email }: Email) => {
+    return prisma.todo.findMany({
+      where: { author: { email } },
       include: { author: true },
     });
   },
 
-  createTodo: async (todoData: CreateTodo) => {
-    const { content, authorId } = todoData;
-    const id = +authorId;
+  getTodoById: async ({ email, id }: GetTodoById) => {
+    return prisma.todo.findFirst({
+      where: { id, author: { email } },
+      include: { author: true },
+    });
+  },
+
+  createTodo: async ({ content, email }: CreateTodo) => {
+    let user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      // If user does not exist, create the user
+      user = await prisma.user.create({ data: { email } });
+    }
+
     return prisma.todo.create({
-      data: { content, authorId: id },
+      data: { content, authorId: user.id },
     });
   },
 
@@ -36,8 +48,8 @@ export const TodoService = {
     });
   },
 
-  deleteTodo: async (todoId: number) => {
-    return prisma.todo.delete({ where: { id: +todoId } });
+  deleteTodo: async ({ email, id }: DeleteTodo) => {
+    return prisma.todo.deleteMany({ where: { id, author: { email } } });
   },
 
   deleteAllTodos: async () => {
