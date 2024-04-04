@@ -37,9 +37,6 @@ const userInfo = async (
       }
     );
 
-    console.log("User data:", response.data);
-
-    // Assuming the user data is in the response
     const userData = response.data;
 
     // Cache user data for the token
