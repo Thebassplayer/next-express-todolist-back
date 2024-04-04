@@ -36,7 +36,7 @@ app.use(checkJwt);
 
 app.use("/api", otherRoutes);
 
-app.use("/api/todo", checkJwt, todoRoutes);
+app.use("/api/todo", todoRoutes);
 
 app.use(notFoundHandler);
 app.use(generalErrorHandler);
