@@ -1,5 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { TodoService } from "../services/todo.service";
+import { Router } from "express";
 import { TodoController } from "../controllers/todo.controller";
 
 const router = Router();
