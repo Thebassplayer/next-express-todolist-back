@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "build": "npx tsc",
-    "start": "ts-node ./src/index.ts",
+    "start": "node ./dist/src/index.js",
     "start:prod": "npm run build && node ./dist/src/index.js",
     "dev": "npx nodemon ./src/index.ts",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\""
