@@ -8,9 +8,9 @@ export const UserService = {
     return prisma.user.findMany({ include: { todos: true } });
   },
 
-  getUserById: async (userId: UserId) => {
+  getUserById: async (userId: number) => {
     return prisma.user.findUnique({
-      where: { id: +userId },
+      where: { id: userId },
       include: { todos: true },
     });
   },
@@ -19,15 +19,15 @@ export const UserService = {
     return prisma.user.create({ data: { email, name } });
   },
 
-  updateUser: async (userId: UserId, email: string, name: string) => {
+  updateUser: async (userId: number, email: string, name: string) => {
     return prisma.user.update({
-      where: { id: +userId },
+      where: { id: userId },
       data: { email, name },
     });
   },
 
-  deleteUser: async (userId: UserId) => {
-    return prisma.user.delete({ where: { id: +userId } });
+  deleteUser: async (userId: number) => {
+    return prisma.user.delete({ where: { id: userId } });
   },
 
   checkUserExists: async (email: string) => {
