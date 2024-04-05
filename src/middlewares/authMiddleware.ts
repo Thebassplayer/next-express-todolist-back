@@ -7,5 +7,3 @@ export const checkJwt = auth({
   issuerBaseURL,
   tokenSigningAlg: "RS256",
 });
-
-console.log(checkJwt);
