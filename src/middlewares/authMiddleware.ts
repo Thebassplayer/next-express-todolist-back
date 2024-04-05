@@ -8,4 +8,4 @@ export const checkJwt = auth({
   tokenSigningAlg: "RS256",
 });
 
-const result = console.log(checkJwt);
+console.log(checkJwt);
